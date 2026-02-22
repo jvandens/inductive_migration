@@ -51,5 +51,5 @@ services:
       - db-legacy-mysql
       - db-modern-mysql
       - db-mariadb
-  volumes:
-    ignition_test_data:  
+volumes:
+  ignition_test_data:  
