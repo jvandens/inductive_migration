@@ -46,8 +46,10 @@ services:
       - GATEWAY_ADMIN_PASSWORD=password
       - IGNITION_EDITION=standard
     volumes:
-      - ./ignition-data:/usr/local/bin/ignition/data
+      - ignition_test_data:/usr/local/bin/ignition/data
     depends_on:
       - db-legacy-mysql
       - db-modern-mysql
       - db-mariadb
+  volumes:
+    ignition_test_data:  
