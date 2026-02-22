@@ -1,0 +1,53 @@
+services:
+  # 1. SOURCE: Current legacy environment
+  db-legacy-mysql:
+    image: mysql:5.6
+    container_name: mysql_56_source
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=scada_migration_test
+    volumes:
+      - ./legacy-data:/var/lib/mysql
+
+  # 2. TARGET A: Modern MySQL
+  db-modern-mysql:
+    image: mysql:8.4 # Using the 2026 LTS version
+    container_name: mysql_84_target
+    ports:
+      - "3307:3306" # Shifted port to avoid conflict
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=scada_new
+    volumes:
+      - ./modern-mysql-data:/var/lib/mysql
+
+  # 3. TARGET B: Modern MariaDB
+  db-mariadb:
+    image: mariadb:11.4
+    container_name: mariadb_target
+    ports:
+      - "3308:3306" # Shifted port to avoid conflict
+    environment:
+      - MARIADB_ROOT_PASSWORD=password
+      - MARIADB_DATABASE=scada_maria
+    volumes:
+      - ./mariadb-data:/var/lib/mysql
+
+  # 4. GATEWAY: Ignition
+  ignition:
+    image: inductiveautomation/ignition:8.1.43 # Latest Stable
+    container_name: ignition_gateway
+    ports:
+      - "8098:8088"
+    environment:
+      - ACCEPT_IGNITION_EULA=Y
+      - GATEWAY_ADMIN_PASSWORD=password
+      - IGNITION_EDITION=standard
+    volumes:
+      - ./ignition-data:/usr/local/bin/ignition/data
+    depends_on:
+      - db-legacy-mysql
+      - db-modern-mysql
+      - db-mariadb
