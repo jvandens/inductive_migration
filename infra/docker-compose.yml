@@ -9,7 +9,7 @@ services:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=scada_migration_test
     volumes:
-      - ./legacy-data:/var/lib/mysql
+      - ${STACK_ROOT}/data/legacy-data:/var/lib/mysql
 
   # 2. TARGET A: Modern MySQL
   db-modern-mysql:
@@ -21,7 +21,7 @@ services:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=scada_new
     volumes:
-      - ./modern-mysql-data:/var/lib/mysql
+      - ${STACK_ROOT}/data/modern-mysql-data:/var/lib/mysql
 
   # 3. TARGET B: Modern MariaDB
   db-mariadb:
@@ -33,7 +33,7 @@ services:
       - MARIADB_ROOT_PASSWORD=password
       - MARIADB_DATABASE=scada_maria
     volumes:
-      - ./mariadb-data:/var/lib/mysql
+      - ${STACK_ROOT}/data/mariadb-data:/var/lib/mysql
 
   # 4. GATEWAY: Ignition
   ignition:
@@ -46,10 +46,8 @@ services:
       - GATEWAY_ADMIN_PASSWORD=password
       - IGNITION_EDITION=standard
     volumes:
-      - ignition_test_data:/usr/local/bin/ignition/data
+      - ${STACK_ROOT}/data/ignition:/usr/local/bin/ignition/data
     depends_on:
       - db-legacy-mysql
       - db-modern-mysql
       - db-mariadb
-volumes:
-  ignition_test_data:  
