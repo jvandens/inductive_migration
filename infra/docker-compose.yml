@@ -37,7 +37,7 @@ services:
 
   # 4. GATEWAY: Ignition
   ignition:
-    image: inductiveautomation/ignition:8.1.43 # Latest Stable
+    image: inductiveautomation/ignition:8.1.43
     container_name: ignition_gateway
     ports:
       - "8098:8088"
@@ -46,17 +46,17 @@ services:
       - GATEWAY_ADMIN_PASSWORD=password
       - IGNITION_EDITION=standard
     volumes:
-      - ${STACK_ROOT}/data/ignition:/usr/local/bin/ignition/data
-      # ADD THIS ENTRYPOINT OVERRIDE which is required for first starup to cp ignition template xml
-    entrypoint: >
-      sh -c "
-      if [ ! -f /usr/local/bin/ignition/data/gateway.xml ]; then
-        echo 'Seeding empty bind mount...';
-        cp -rp /usr/local/bin/ignition/data_clean/* /usr/local/bin/ignition/data/;
-      fi;
-      /usr/local/bin/docker-entrypoint.sh
-      "
+      - ignition_data:/usr/local/bin/ignition/data  # Use the named volume here
     depends_on:
       - db-legacy-mysql
       - db-modern-mysql
       - db-mariadb
+
+# This is required to make docker vol for ignition to properly seed it's template
+volumes:
+  ignition_data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${STACK_ROOT}/data/ignition' # This points to your host folder
