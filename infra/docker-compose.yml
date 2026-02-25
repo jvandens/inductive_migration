@@ -47,6 +47,15 @@ services:
       - IGNITION_EDITION=standard
     volumes:
       - ${STACK_ROOT}/data/ignition:/usr/local/bin/ignition/data
+      # ADD THIS ENTRYPOINT OVERRIDE which is required for first starup to cp ignition template xml
+    entrypoint: >
+      sh -c "
+      if [ ! -f /usr/local/bin/ignition/data/gateway.xml ]; then
+        echo 'Seeding empty bind mount...';
+        cp -rp /usr/local/bin/ignition/data_clean/* /usr/local/bin/ignition/data/;
+      fi;
+      /usr/local/bin/docker-entrypoint.sh
+      "
     depends_on:
       - db-legacy-mysql
       - db-modern-mysql
