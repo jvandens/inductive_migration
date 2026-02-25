@@ -36,11 +36,12 @@ services:
       - ${STACK_ROOT}/data/mariadb-data:/var/lib/mysql
       # Tune maria to give more RAM for buffer pool (for bulk inserts)
     command: [
-      "mysqld",
+      "mariadbd",
       "--innodb-buffer-pool-size=2G",      # Set to ~50% of your available Host RAM
       "--innodb-log-file-size=512M",      # Larger logs = fewer "checkpoints" during import
       "--innodb-flush-log-at-trx-commit=2", # Massive speed boost for bulk inserts
-      "--max-allowed-packet=1G"           # Prevents "Packet too large" errors on big SQL lines
+      "--max-allowed-packet=1G",           # Prevents "Packet too large" errors on big SQL lines
+      "--skip-log-bin"  # Optional: added this to save disk space
     ]
 
   # 4. GATEWAY: Ignition
