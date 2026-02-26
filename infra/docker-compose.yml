@@ -46,7 +46,7 @@ services:
 
   # 4. GATEWAY: Ignition
   ignition:
-    image: inductiveautomation/ignition:8.1.43
+    image: inductiveautomation/ignition:latest
     container_name: ignition_gateway
     ports:
       - "8098:8088"
