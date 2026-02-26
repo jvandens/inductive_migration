@@ -26,6 +26,7 @@ services:
   # 3. TARGET B: Modern MariaDB
   db-mariadb:
     image: mariadb:11.4
+    restart: unless-stopped
     container_name: mariadb_target
     ports:
       - "3368:3306" # Shifted port to avoid conflict
@@ -47,6 +48,7 @@ services:
   # 4. GATEWAY: Ignition
   ignition:
     image: inductiveautomation/ignition:latest
+    restart: unless-stopped
     container_name: ignition_gateway
     ports:
       - "8098:8088"
